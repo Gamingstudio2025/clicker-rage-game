@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Don't Click the Red One 🔴</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      margin-top: 30px;
+    }
+    #game-area {
+      margin: 40px auto;
+      width: 300px;
+      height: 300px;
+      position: relative;
+      border: 2px solid #fff;
+    }
+    .btn {
+      position: absolute;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #score {
+      font-size: 24px;
+      margin-top: 10px;
+    }
+    #restart {
+      display: none;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #ad-banner {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 60px;
+      background: #333;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Don't Click the Red One 🔴</h1>
+  <div id="score">Score: 0</div>
+  <div id="game-area"></div>
+  <button id="restart">Restart</button>
+  <div id="ad-banner">[ Your Ad Banner Here ]</div>
+
+  <script>
+    const gameArea = document.getElementById("game-area");
+    const scoreDisplay = document.getElementById("score");
+    const restartBtn = document.getElementById("restart");
+    let score = 0;
+    let speed = 1000;
+    let gameInterval;
+
+    function randomPosition() {
+      return Math.floor(Math.random() * 250);
+    }
+
+    function randomColor() {
+      return Math.random() < 0.2 ? "red" : "green";
+    }
+
+    function createButton() {
+      const btn = document.createElement("button");
+      btn.className = "btn";
+      const color = randomColor();
+      btn.style.backgroundColor = color;
+      btn.style.left = randomPosition() + "px";
+      btn.style.top = randomPosition() + "px";
+      btn.textContent = color === "red" ? "X" : "+1";
+      gameArea.appendChild(btn);
+
+      btn.onclick = () => {
+        if (color === "red") {
+          gameOver();
+        } else {
+          score++;
+          scoreDisplay.textContent = "Score: " + score;
+          speed = Math.max(300, speed - 20);
+          gameArea.removeChild(btn);
+        }
+      };
+
+      setTimeout(() => {
+        if (gameArea.contains(btn)) gameArea.removeChild(btn);
+      }, speed);
+    }
+
+    function startGame() {
+      score = 0;
+      speed = 1000;
+      scoreDisplay.textContent = "Score: 0";
+      restartBtn.style.display = "none";
+      gameInterval = setInterval(createButton, speed);
+    }
+
+    function gameOver() {
+      clearInterval(gameInterval);
+      alert("Game Over! Your score: " + score);
+      restartBtn.style.display = "inline-block";
+    }
+
+    restartBtn.onclick = startGame;
+
+    startGame();
+  </script>
+</body>
+</html>
